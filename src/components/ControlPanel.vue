@@ -26,7 +26,9 @@
     </header>
 </template>
 
+
 <script setup>
+    import { watch } from 'vue'
     import UITabs from './ui/UITabs.vue'
 
     const rows = defineModel('rows', {
@@ -59,14 +61,32 @@
         type: [Number, String],
         required: 'a_star'
     })
-    const start = defineModel('start', {
+    const startCell = defineModel('startCell', {
         type: Boolean,
-        default: true,
+        default: false,
     })
-    const finish = defineModel('finish', {
+    const finishCell = defineModel('finishCell', {
         type: Boolean,
-        default: true,
+        default: false,
     })
+
+    watch(
+        () => startCell.value,
+        value => {
+            if (value) {
+                finishCell.value = false
+            }
+        }
+    )
+
+    watch(
+        () => finishCell.value,
+        value => {
+            if (value) {
+                startCell.value = false
+            }
+        }
+    )
 
     const tabs = [
         { label: 'A*', value: 'a_star' },
