@@ -4,8 +4,8 @@
         height: size + 'px',
         borderColor: borderColor,
         background: backgroundColor,
-    }" @click="$emit('click')">
-        <slot />
+        }" 
+        @click="$emit('click')">
     </div>
 </template>
 
@@ -22,8 +22,13 @@ const props = defineProps({
     },
     item: {
         type: Object,
-    }
+    },    
+    item: {
+        type: Object,
+        default: () => ({ isObstacle: false, isStart: false, isFinish: false, isPath: false })
+    },
 })
+
 const borderColor = computed(() => {
     if (!props.item) return '#999'
     if (props.item.isStart) return 'green'
@@ -46,5 +51,6 @@ const backgroundColor = computed(() => {
 <style>
 .grid-map-cell {
     border: 1px solid;
+    box-sizing: border-box;
 }
 </style>

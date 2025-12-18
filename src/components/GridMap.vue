@@ -1,7 +1,11 @@
 <template>
     <div class="grid-map">
         <div class="grid-map-row" v-for="i in rows" :key="`row-${i}`">
-            <GridMapCell v-for="j in cols" :key="`cell-${j}-${i}`" :size="size" :item="getCellState(j, i)"
+            <GridMapCell 
+                v-for="j in cols" 
+                :key="`cell-${j}-${i}`" 
+                :size="size" 
+                :item="getCellState(j, i)"
                 @click="onCellClick(j, i)">
             </GridMapCell>
         </div>
@@ -16,7 +20,8 @@ const props = defineProps({
         type: Number,
     },
     editMode: {
-        type: Boolean
+        type: Boolean,
+        default: false,
     },
     startPlacement: {
         type: Boolean,
@@ -67,11 +72,7 @@ const getCellState = (col, row) => {
         finishCell.value &&
         finishCell.value.col === col &&
         finishCell.value.row === row
-    const isPath = !!path.value[key]
-
-    if (!isObstacle && !isStart && !isFinish && !isPath) {
-        return null
-    }
+    const isPath = !isStart && !isFinish && !!path.value[key]
 
     return { isObstacle, isStart, isFinish, isPath }
 }
@@ -113,7 +114,7 @@ const onCellClick = (col, row) => {
 }
 </script>
 
-<style>
+<style scoped>
 .grid-map {
     display: flex;
     flex-direction: column;

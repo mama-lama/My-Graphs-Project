@@ -11,17 +11,21 @@ const rows = ref(20)
 const editMode = ref(false)
 const startPlacement = ref(false)
 const finishPlacement = ref(false)
-const startCell = ref(null)   
-const finishCell = ref(null)  
+const startCell = ref(null)
+const finishCell = ref(null)
 const pathMap = ref({})
+const pathFound = ref(false)
+const pathLength = ref(0)
 
 const recomputePath = () => {
   if (!startCell.value || !finishCell.value) {
     pathMap.value = {}
+    pathFound.value = false
+    pathLength.value = 0
     return
   }
 
-  const { pathMap: map } = findPath({
+  const { path, pathMap: map } = findPath({
     algorithm: tab.value,
     rows: rows.value,
     cols: cols.value,
@@ -30,12 +34,14 @@ const recomputePath = () => {
     finish: finishCell.value,
   })
 
-  pathMap.value = map
+  pathMap.value = map || {}
+  pathFound.value = Array.isArray(path) && path.length > 0
+  pathLength.value = pathFound.value ? Math.max(0, path.length - 1) : 0
 }
 
 watch(
   [tab, obstacles, startCell, finishCell, rows, cols],
-  () => recomputePath(),
+  recomputePath,
   { deep: true },
 )
 </script>
@@ -48,6 +54,8 @@ watch(
     v-model:tab="tab"
     v-model:startCell="startPlacement"
     v-model:finishCell="finishPlacement"
+    :path-found="pathFound"
+    :path-length="pathLength"
   />
 
   <GridMap
@@ -60,9 +68,7 @@ watch(
     :edit-mode="editMode"
     :start-placement="startPlacement"
     :finish-placement="finishPlacement"
-  >
-  </GridMap>
+  />
 </template>
 
-<style scoped>
-</style>
+<style scoped></style>
